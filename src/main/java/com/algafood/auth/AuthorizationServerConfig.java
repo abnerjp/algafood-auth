@@ -30,10 +30,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.scopes("write", "read")
 				.accessTokenValiditySeconds(60 * 60 * 6)
 			.and()
-				.withClient("app-mobile")
-				.secret(passwordEncoder.encode("web654321"))
-				.authorizedGrantTypes("outrogranttype", "password")
-				.scopes("write", "read");
+				.withClient("checktoken")
+				.secret(passwordEncoder.encode("check123456"));
 	}
 	
 	@Override
