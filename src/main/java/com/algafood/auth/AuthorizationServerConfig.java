@@ -41,10 +41,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			
 			.and()
 				.withClient("algafood-analytics")
-				.secret(passwordEncoder.encode("analytics123456"))
+				.secret(passwordEncoder.encode(""))
 				.authorizedGrantTypes("authorization_code")
 				.scopes("write", "read")
-				.redirectUris("http://www.foodanalytics.local:8082")
+				.redirectUris("http://127.0.0.1:8001")
 			
 			.and()
 				.withClient("web-admin")
@@ -65,7 +65,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 //		security.checkTokenAccess("isAuthenticated()");
-		security.checkTokenAccess("permitAll()");
+		security.checkTokenAccess("permitAll()")
+		.allowFormAuthenticationForClients();
 	}
 	
 	@Override
