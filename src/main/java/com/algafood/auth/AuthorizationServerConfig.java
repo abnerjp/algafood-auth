@@ -33,6 +33,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private UserDetailsService userDetailService;
 	
+	@Autowired
+	private JwtKeyStoreProperties jwtKeyStoreProperties;
+	
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -89,9 +92,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public JwtAccessTokenConverter jwtAccessTokenConverter() {
 		JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
 		
-		ClassPathResource jksResource = new ClassPathResource("keystores/algafood.jks");
-		String keyStorePass = "123456";
-		String keyPassAlias = "algafood";
+		ClassPathResource jksResource = new ClassPathResource(jwtKeyStoreProperties.getPath());
+		String keyStorePass = jwtKeyStoreProperties.getPassword();
+		String keyPassAlias = jwtKeyStoreProperties.getKeypairAlias();
 		
 		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(jksResource, keyStorePass.toCharArray());
 		KeyPair keyPair = keyStoreKeyFactory.getKeyPair(keyPassAlias);
