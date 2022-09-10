@@ -1,4 +1,4 @@
-package com.algafood.auth;
+package com.algafood.auth.core;
 
 import java.security.KeyPair;
 import java.util.Arrays;
