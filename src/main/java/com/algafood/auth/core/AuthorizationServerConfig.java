@@ -3,13 +3,14 @@ package com.algafood.auth.core;
 import java.security.KeyPair;
 import java.util.Arrays;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -29,9 +30,6 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
@@ -40,39 +38,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Autowired
 	private JwtKeyStoreProperties jwtKeyStoreProperties;
 	
+	@Autowired
+	private DataSource dataSource;
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients
-			.inMemory()
-				.withClient("algafood-web")
-				.secret(passwordEncoder.encode("web123456"))
-				.authorizedGrantTypes("password", "refresh_token")
-				.scopes("WRITE", "READ")
-				.accessTokenValiditySeconds(6 * 60 * 60) // 6 horas
-				.refreshTokenValiditySeconds(60 * 24 * 60 * 60) // 60 dias
-			
-			.and()
-				.withClient("algafood-analytics")
-				.secret(passwordEncoder.encode(""))
-				.authorizedGrantTypes("authorization_code")
-				.scopes("WRITE", "READ")
-				.redirectUris("http://127.0.0.1:8001")
-			
-			.and()
-				.withClient("web-admin")
-				.authorizedGrantTypes("implicit")
-				.scopes("WRITE", "READ")
-				.redirectUris("http://www.foodanalytics.local:8082")
-			
-			.and()
-				.withClient("faturamento")
-				.secret(passwordEncoder.encode("faturamento123456"))
-				.authorizedGrantTypes("client_credentials")
-				.scopes("READ")
-			.and()
-				.withClient("checktoken")
-				.secret(passwordEncoder.encode("check123456"));
+		clients.jdbc(dataSource);
 	}
 	
 	@Override
